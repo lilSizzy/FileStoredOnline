@@ -1,0 +1,26 @@
+services:
+  db:
+    image: postgres:17
+    container_name: edms_postgres
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    volumes:
+      - edms_pgdata:/var/lib/postgresql/data
+      - ./db/migration:/docker-entrypoint-initdb.d:ro
+
+  backend:
+    image: eclipse-temurin:21-jdk
+    container_name: edms_backend
+    restart: always
+    ports:
+      - "${BACKEND_PORT}:8080"
+    volumes:
+      - edms_storage_data:/app/uploads
+    command: ["tail", "-f", "/dev/null"]
+
+volumes:
+  edms_pgdata:
+  edms_storage_data:
